@@ -15,10 +15,6 @@ Aplicación de escritorio para extraer texto e imágenes de archivos PDF, con do
 - **Interfaz gráfica** con barra de progreso, log en tiempo real y botón de cancelación.
 - **Auto-instalación de dependencias** si no están presentes.
 
-## Capturas de pantalla
-
-> _Agrega aquí capturas de pantalla de la aplicación._
-
 ## Requisitos
 
 - Python 3.8 o superior
