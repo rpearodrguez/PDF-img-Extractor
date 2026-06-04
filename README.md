@@ -1,20 +1,17 @@
 # PDF Text & Image Extractor
 
-Aplicación de escritorio para extraer texto e imágenes de archivos PDF, con opciones de conversión de formato y combinación de imágenes por página.
+Aplicación de escritorio para extraer texto e imágenes de archivos PDF, con dos modos de extracción y opciones de conversión de formato.
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Características
 
-- **Extracción de texto**: guarda el texto de todas las páginas en un archivo `.txt`, separado por sección por página.
-- **Extracción de imágenes**: extrae las imágenes embebidas del PDF.
+- **Dos modos de extracción** seleccionables desde la interfaz:
+  - **Imágenes embebidas**: extrae las imágenes que el PDF lleva internamente.
+  - **Páginas renderizadas**: convierte cada página completa en una imagen, igual que la vería un lector de PDF. Permite elegir la resolución en DPI.
+- **Extracción de texto**: guarda el texto de todas las páginas en un archivo `.txt`, separado por sección por página (en ambos modos).
 - **Conversión de formato**: convierte las imágenes extraídas a PNG, JPEG, BMP, TIFF o WEBP.
-- **Modos de combinación de imágenes por página**:
-  - **Separadas** (por defecto): guarda cada imagen como archivo independiente.
-  - **Renderizar página completa**: reconstruye la página usando el motor de renderizado del PDF (recomendado para libros escaneados).
-  - **Horizontal**: combina las imágenes de la página en una sola fila.
-  - **Vertical**: apila las imágenes de la página en una sola columna.
 - **Interfaz gráfica** con barra de progreso, log en tiempo real y botón de cancelación.
 - **Auto-instalación de dependencias** si no están presentes.
 
@@ -39,20 +36,34 @@ python extract_pdf.py
 
 1. Selecciona el archivo PDF con el botón **Buscar…**.
 2. Elige la carpeta de salida (se propone automáticamente una carpeta junto al PDF).
-3. Selecciona el formato de imagen de destino (opcional).
-4. Elige el modo de combinación de imágenes (opcional).
+3. Selecciona el **modo de extracción**:
+   - *Imágenes embebidas*: extrae las imágenes internas del PDF.
+   - *Páginas renderizadas*: renderiza cada página como imagen. Aparece el selector de **Resolución (DPI)**.
+4. Selecciona el formato de imagen de destino (opcional).
 5. Pulsa **Extraer**.
 6. Al terminar, usa **Abrir carpeta** para ver los resultados.
+
+### Resoluciones disponibles (modo páginas renderizadas)
+
+| DPI | Uso recomendado |
+|-----|-----------------|
+| 72  | Previsualización rápida |
+| 96  | Pantalla estándar |
+| 150 | Lectura en pantalla |
+| 200 | Calidad media / OCR |
+| 300 | Impresión / archivo |
 
 ### Estructura de salida
 
 ```
 <nombre_pdf>_extracted/
-├── <nombre_pdf>.txt       # Texto extraído, separado por páginas
+├── <nombre_pdf>.txt        # Texto extraído, separado por páginas
 └── images/
-    ├── page1_img1.png
+    ├── page1.png           # Modo páginas renderizadas
+    ├── page2.png
+    │   ...
+    ├── page1_img1.png      # Modo imágenes embebidas
     ├── page1_img2.jpg
-    ├── page2_merged.png   # Si se usa modo combinación
     └── ...
 ```
 
