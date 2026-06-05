@@ -259,11 +259,17 @@ class App(tk.Tk):
             variable=self.cbz_var, anchor="w",
         ).grid(row=5, column=0, columnspan=3, sticky="w", padx=10, pady=(0, 2))
 
-        # ── fila 6: barra de progreso
+        # ── fila 6: barra de progreso + contador de archivos
+        progress_frame = tk.Frame(self)
+        progress_frame.grid(row=6, column=0, columnspan=3, padx=8, pady=6)
         self.progress_var = tk.IntVar(value=0)
-        self.progress_bar = ttk.Progressbar(self, variable=self.progress_var,
-                                             maximum=100, length=420)
-        self.progress_bar.grid(row=6, column=0, columnspan=3, padx=8, pady=6)
+        self.progress_bar = ttk.Progressbar(progress_frame, variable=self.progress_var,
+                                             maximum=100, length=320)
+        self.progress_bar.pack(side="left")
+        self.file_count_var = tk.StringVar(value="")
+        tk.Label(progress_frame, textvariable=self.file_count_var,
+                 font=("Segoe UI", 9), fg="#444444", width=16, anchor="w",
+                 ).pack(side="left", padx=(10, 0))
 
         # ── fila 7: botones
         btn_row = tk.Frame(self)
@@ -396,6 +402,7 @@ class App(tk.Tk):
                 stem = os.path.splitext(os.path.basename(pdf_path))[0]
 
                 if batch:
+                    self.file_count_var.set(f"Archivo {i+1} / {len(pdf_files)}")
                     file_out = os.path.join(out_dir, f"{stem}_extracted")
                     self._log(f"\n── Archivo {i+1}/{len(pdf_files)}: {os.path.basename(pdf_path)}")
                     last_dir = out_dir
@@ -426,6 +433,7 @@ class App(tk.Tk):
             if batch:
                 self._log(f"\nProceso por lotes finalizado.")
 
+            self.file_count_var.set("")
             self.btn_extract.config(state="normal")
             self.btn_stop.config(state="disabled")
             if os.path.isdir(last_dir):
