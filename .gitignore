@@ -41,3 +41,9 @@ desktop.ini
 .idea/
 *.swp
 *.swo
+
+# Claude Code
+CLAUDE.md
+
+# Carpeta de pruebas
+Prueba/

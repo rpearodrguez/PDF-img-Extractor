@@ -1,24 +1,34 @@
-# PDF Text & Image Extractor
+# Media Center
 
-Aplicación de escritorio para extraer texto e imágenes de archivos PDF, con dos modos de extracción y opciones de conversión de formato.
+Aplicación de escritorio local para trabajar con PDFs e imágenes, con soporte futuro para audio y video.
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![PyQt6](https://img.shields.io/badge/PyQt6-6.6%2B-green)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Características
 
-- **Dos modos de extracción** seleccionables desde la interfaz:
+### Módulo PDF
+
+- **Tres modos de extracción** seleccionables desde la interfaz:
   - **Imágenes embebidas**: extrae las imágenes que el PDF lleva internamente.
-  - **Páginas renderizadas**: convierte cada página completa en una imagen, igual que la vería un lector de PDF. Permite elegir la resolución en DPI.
-- **Extracción de texto**: guarda el texto de todas las páginas en un archivo `.txt`, separado por sección por página (en ambos modos).
+  - **Páginas renderizadas**: convierte cada página completa en una imagen. Permite elegir la resolución en DPI.
+  - **Markdown estructurado**: genera un archivo `.md` con el contenido del PDF, detectando encabezados (H1/H2/H3) por tamaño de fuente y negrita, reconstruyendo tablas en formato markdown e incrustando referencias a las imágenes.
+- **Extracción de texto**: guarda el texto de todas las páginas en un `.txt`, separado por página.
 - **Conversión de formato**: convierte las imágenes extraídas a PNG, JPEG, BMP, TIFF o WEBP.
-- **Interfaz gráfica** con barra de progreso, log en tiempo real y botón de cancelación.
+- **Empaquetado CBZ**: comprime las imágenes en un archivo `.cbz` compatible con lectores de cómics.
+- **Copia del PDF original**: opción para guardar el PDF fuente dentro de la carpeta de salida.
+- **Procesamiento por lotes**: selecciona varios PDFs y extrae todos de una vez.
+
+### General
+
+- **Interfaz PyQt6** con barra de progreso, log en tiempo real y botón de cancelación.
 - **Auto-instalación de dependencias** si no están presentes.
+- Arquitectura modular: cada tipo de medio tiene su propio panel y procesador independientes.
 
 ## Requisitos
 
 - Python 3.8 o superior
-- Las dependencias se instalan automáticamente al ejecutar el script, o manualmente:
 
 ```bash
 pip install -r requirements.txt
@@ -27,17 +37,22 @@ pip install -r requirements.txt
 ## Uso
 
 ```bash
-python extract_pdf.py
+python main.py
 ```
 
-1. Selecciona el archivo PDF con el botón **Buscar…**.
-2. Elige la carpeta de salida (se propone automáticamente una carpeta junto al PDF).
-3. Selecciona el **modo de extracción**:
-   - *Imágenes embebidas*: extrae las imágenes internas del PDF.
-   - *Páginas renderizadas*: renderiza cada página como imagen. Aparece el selector de **Resolución (DPI)**.
-4. Selecciona el formato de imagen de destino (opcional).
-5. Pulsa **Extraer**.
-6. Al terminar, usa **Abrir carpeta** para ver los resultados.
+1. Selecciona el módulo en la barra lateral izquierda (**PDF**, Imagen, Audio, Video).
+2. En el módulo PDF:
+   - Selecciona uno o varios PDFs con los botones **Un archivo** / **Varios…**
+   - Elige la carpeta de salida (se propone automáticamente una carpeta junto al PDF).
+   - Selecciona el **modo de extracción**:
+     - *Imágenes embebidas*: extrae las imágenes internas del PDF.
+     - *Páginas renderizadas*: renderiza cada página como imagen. Aparece el selector de **Resolución (DPI)**.
+     - *Markdown estructurado*: genera un `.md` con el contenido estructurado y las imágenes referenciadas.
+   - Selecciona el formato de imagen de destino (no aplica en modo Markdown).
+   - Activa **CBZ** para comprimir las imágenes en un archivo de cómic (no aplica en modo Markdown).
+   - Activa **Guardar copia del PDF original** si quieres conservar el PDF fuente en la carpeta de salida.
+   - Pulsa **Extraer**.
+3. Al terminar, usa **Abrir carpeta** para ver los resultados.
 
 ### Resoluciones disponibles (modo páginas renderizadas)
 
@@ -53,20 +68,37 @@ python extract_pdf.py
 
 ```
 <nombre_pdf>_extracted/
-├── <nombre_pdf>.txt        # Texto extraído, separado por páginas
+├── <nombre_pdf>.txt        # Modos: imágenes embebidas y páginas renderizadas
+├── <nombre_pdf>.md         # Modo: Markdown estructurado
 └── images/
     ├── page1.png           # Modo páginas renderizadas
-    ├── page2.png
-    │   ...
-    ├── page1_img1.png      # Modo imágenes embebidas
-    ├── page1_img2.jpg
+    ├── page1_img1.png      # Modos imágenes embebidas y Markdown
     └── ...
+```
+
+En modo por lotes, cada PDF genera su propia subcarpeta `<nombre_pdf>_extracted/` dentro de la carpeta de salida elegida.
+
+## Estructura del proyecto
+
+```
+media-center/
+├── main.py                      # Entry point
+├── processors/
+│   └── pdf.py                   # Lógica de extracción PDF (sin dependencias de UI)
+├── ui/
+│   ├── main_window.py           # Ventana principal con sidebar
+│   ├── panels/
+│   │   └── pdf_panel.py         # Panel de extracción PDF
+│   └── widgets/
+│       └── log_widget.py        # Área de log reutilizable
+└── requirements.txt
 ```
 
 ## Dependencias
 
 | Paquete | Uso |
 |---------|-----|
+| [PyQt6](https://doc.qt.io/qtforpython/) | Framework de interfaz gráfica |
 | [PyMuPDF](https://pymupdf.readthedocs.io/) | Lectura y renderizado de PDFs |
 | [Pillow](https://python-pillow.org/) | Manipulación y conversión de imágenes |
 
